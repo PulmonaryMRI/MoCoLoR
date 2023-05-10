@@ -1,5 +1,13 @@
 # MoCoLoR
 
+Motion-compensated low-rank reconstruction for simultaneous structural and functional UTE lung MRI
+
+![Figure1-methods](https://github.com/PulmonaryMRI/MoCoLoR/assets/22829346/8196dd2c-01df-49a3-8843-533f20f9cb41)
+
+## Reference
+
+Tan F, Zhu X, Chan M, et al. Motion-compensated low-rank reconstruction for simultaneous structural and functional UTE lung MRI. Magn Reson Med. 2023;1-13. doi: 10.1002/mrm.29703
+
 ## Dependency
 
 numpy, matplotlib, sigpy==0.1.16, antspyx, h5py, pydicom
