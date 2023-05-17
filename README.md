@@ -6,7 +6,7 @@ Motion-compensated low-rank reconstruction for simultaneous structural and funct
 
 ## Reference
 
-Tan F, Zhu X, Chan M, et al. Motion-compensated low-rank reconstruction for simultaneous structural and functional UTE lung MRI. Magn Reson Med. 2023;1-13. doi: 10.1002/mrm.29703
+Tan F, Zhu X, Chan M, Zapala MA, Vasanawala SS, Ong F, Lustig M, Larson PEZ. Motion-compensated low-rank reconstruction for simultaneous structural and functional UTE lung MRI. Magn Reson Med. 2023. doi: [10.1002/mrm.29703](https://dx.doi.org/10.1002/mrm.29703)
 
 ## Dependency
 
