@@ -1,0 +1,5 @@
+# Data folder
+/data
+
+# Numpy
+*.npy
