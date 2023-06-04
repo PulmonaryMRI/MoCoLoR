@@ -1,5 +1,8 @@
 # Data folder
-/data
+recon/data
 
 # Numpy
 *.npy
+
+# pyc
+*.pyc
