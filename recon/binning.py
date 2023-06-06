@@ -160,6 +160,7 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
 
 # %% Folder
 
+N_bins = 10
 
 folder = "data/floret/"
 folder = "data/floret-walkup/"
@@ -268,87 +269,86 @@ np.save(folder + "bdcf.npy", dcf_save)
 
 
 
-# # %% Read in motion waveform
-# import scipy
-# import sigpy as sp
-# # Load motion
-# motion_load = np.array(np.load(folder + "motion.npy"))
-# motion_load = np.squeeze(motion_load)
-# if np.size(np.shape(motion_load)) != 2:
-#     print('Unexpected motion data dimensions.')
-# waveform = np.reshape(motion_load, (np.shape(motion_load)[
-#                         0]*np.shape(motion_load)[1]))
+# %% Read in motion waveform
+import scipy
+import sigpy as sp
+# Load motion
+motion_load = np.array(np.load(folder + "motion.npy"))
+motion_load = np.squeeze(motion_load)
+if np.size(np.shape(motion_load)) != 2:
+    print('Unexpected motion data dimensions.')
+waveform = np.reshape(motion_load, (np.shape(motion_load)[
+                        0]*np.shape(motion_load)[1]))
 
-# # Optional, normalize waveform
-# def normalize_data(x):
-#     return (x - np.min(x)) / (np.max(x) - np.min(x))
-# waveform_normalized = normalize_data(waveform)
+# Optional, normalize waveform
+def normalize_data(x):
+    return (x - np.min(x)) / (np.max(x) - np.min(x))
+waveform_normalized = normalize_data(waveform)
 
-# # Visualize motion
-# fig = plt.figure()
-# plt.plot(sp.to_device(waveform[:np.shape(waveform)[0]//2], -1))
-# plt.xlabel('Sample number')
-# plt.ylabel('Motion')
-# plt.title('Respiratory bellows motion (first 25% projections only)')
-# plt.show()
+# Visualize motion
+fig = plt.figure()
+plt.plot(sp.to_device(waveform[:np.shape(waveform)[0]//2], -1))
+plt.xlabel('Sample number')
+plt.ylabel('Motion')
+plt.title('Respiratory bellows motion (first 25% projections only)')
+plt.show()
 
-# # Smooth motion waveform
-# sos = scipy.signal.iirfilter(4, Wn=[0.1, 2.5], fs=200, btype="bandpass",
-#                                 ftype="butter", output="sos")
-# waveform_filt = scipy.signal.sosfilt(sos, waveform)
-# # waveform_filt = scipy.signal.medfilt(waveform,15) # median filter
+# Smooth motion waveform
+sos = scipy.signal.iirfilter(4, Wn=[0.1, 2.5], fs=200, btype="bandpass",
+                                ftype="butter", output="sos")
+waveform_filt = scipy.signal.sosfilt(sos, waveform)
+# waveform_filt = scipy.signal.medfilt(waveform,15) # median filter
 
-# fig = plt.figure()
-# plt.plot(sp.to_device(waveform_filt[:np.shape(waveform_filt)[0]//2], -1))
-# plt.xlabel('Sample number')
-# plt.ylabel('Motion')
-# plt.title('Filtered respiratory bellows motion (first 25% projections only)')
-# plt.show()
+fig = plt.figure()
+plt.plot(sp.to_device(waveform_filt[:np.shape(waveform_filt)[0]//2], -1))
+plt.xlabel('Sample number')
+plt.ylabel('Motion')
+plt.title('Filtered respiratory bellows motion (first 25% projections only)')
+plt.show()
 
-# # Start binning
-# N_bins = 20
-# resp_gated = bin_waveform( waveform_filt, n_bins=N_bins, resp_min=-10000, resp_max=10000, prominence=2000)
-# print(np.sum(resp_gated, axis=1))
+# Start binning
+resp_gated = bin_waveform( waveform_filt, n_bins=N_bins, resp_min=-10000, resp_max=10000, prominence=2000)
+print(np.sum(resp_gated, axis=1))
 
-# # Subset value to have same number proj in each insp exp
-# k=np.min(np.sum(resp_gated, axis=1))
-# print("Number of points per bin selected: " + str(k))
+# Subset value to have same number proj in each insp exp
+k=np.min(np.sum(resp_gated, axis=1))
+print("Number of points per bin selected: " + str(k))
 
-# # Load data and subset
-# ksp = np.load(folder + "ksp.npy")
-# ksp = np.reshape(ksp, (np.shape(ksp)[0], np.shape(ksp)[1]*np.shape(ksp)[2], np.shape(ksp)[3]))
-# print(np.shape(ksp))
-# coord = np.load(folder + "coord.npy")
-# coord = coord.reshape((np.shape(coord)[0]*np.shape(coord)[1],np.shape(coord)[2], np.shape(coord)[3]))
-# dcf = np.load(folder + "dcf.npy")
-# dcf = dcf.reshape((np.shape(dcf)[0]* np.shape(dcf)[1],np.shape(dcf)[2]))
-
+# Load data and subset
+ksp = np.load(folder + "ksp.npy")
+ksp = np.reshape(ksp, (np.shape(ksp)[0], np.shape(ksp)[1]*np.shape(ksp)[2], np.shape(ksp)[3]))
+print(np.shape(ksp))
+coord = np.load(folder + "coord.npy")
+coord = coord.reshape((np.shape(coord)[0]*np.shape(coord)[1],np.shape(coord)[2], np.shape(coord)[3]))
+dcf = np.load(folder + "dcf.npy")
+dcf = dcf.reshape((np.shape(dcf)[0]* np.shape(dcf)[1],np.shape(dcf)[2]))
 
 
-# # Subset
-# ksp_save = np.zeros((N_bins, np.shape(ksp)[0], k, np.shape(ksp)[2]), dtype="complex")
-# coord_save = np.zeros((N_bins, k, np.shape(coord)[1], np.shape(coord)[2]))
-# dcf_save = np.zeros((N_bins, k,  np.shape(dcf)[1]), dtype="complex")
+
+# Subset
+ksp_save = np.zeros((N_bins, np.shape(ksp)[0], k, np.shape(ksp)[2]), dtype="complex")
+coord_save = np.zeros((N_bins, k, np.shape(coord)[1], np.shape(coord)[2]))
+dcf_save = np.zeros((N_bins, k,  np.shape(dcf)[1]), dtype="complex")
 
 
-# for gate_number in range(N_bins):
-#     subset = resp_gated[int(gate_number)]
+for gate_number in range(N_bins):
+    subset = resp_gated[int(gate_number)]
 
-#     # Select only a subset of trajectories and data
-#     ksp_subset = ksp[:, subset, :]
-#     ksp_subset = ksp_subset[:, :k, :]
-#     ksp_save[gate_number, :, :, :] = ksp_subset
-#     coord_subset = coord[subset, ...]
-#     coord_subset = coord_subset[:k,...]
-#     coord_save[gate_number, ...] = coord_subset
-#     dcf_subset = dcf[subset, ...]
-#     dcf_subset = dcf_subset[:k, ...]
-#     dcf_save[gate_number, ...] = dcf_subset
+    # Select only a subset of trajectories and data
+    ksp_subset = ksp[:, subset, :]
+    ksp_subset = ksp_subset[:, :k, :]
+    ksp_save[gate_number, :, :, :] = ksp_subset
+    coord_subset = coord[subset, ...]
+    coord_subset = coord_subset[:k,...]
+    coord_save[gate_number, ...] = coord_subset
+    dcf_subset = dcf[subset, ...]
+    dcf_subset = dcf_subset[:k, ...]
+    dcf_save[gate_number, ...] = dcf_subset
 
-# print(np.shape(ksp_save))
-# print(np.shape(coord_save))
-# print(np.shape(dcf_save))
-# np.save(folder + "bksp.npy", ksp_save)
-# np.save(folder + "bcoord.npy", coord_save)
-# np.save(folder + "bdcf.npy", dcf_save)
+print(np.shape(ksp_save))
+print(np.shape(coord_save))
+print(np.shape(dcf_save))
+np.save(folder + "bksp.npy", ksp_save)
+np.save(folder + "bcoord.npy", coord_save)
+np.save(folder + "bdcf.npy", dcf_save)
 

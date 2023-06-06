@@ -7,6 +7,8 @@ import numpy as np
 
 folder = "data/floret/"
 # folder = "data/floret-la/"
+folder = "data/floret-walkup/"
+
 
 # XD GRASP
 try:
@@ -35,7 +37,7 @@ try:
     print(x.shape)
     pl.ImagePlot(x, x=2,y=3,z=0)
     
-    x = np.load(folder + "lor_vent.npy")
+    x = np.load(folder + "lor.npy")
     x = np.rot90(x, k=2, axes=(2,3))
     print(x.shape)
     pl.ImagePlot(x[:,:, x.shape[2]//2,:], x=1,y=2,z=0, hide_axes=True)

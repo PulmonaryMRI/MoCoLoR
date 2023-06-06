@@ -22,6 +22,7 @@ import sigpy_e.reg as reg
 from sigpy_e.linop_e import NFTs,Diags,DLD,Vstacks
 import sigpy.mri as mr
 import os
+import nibabel as nib
 
 if __name__ == '__main__':
 
@@ -279,3 +280,53 @@ if __name__ == '__main__':
         svs = np.asarray(svs)
         np.save(os.path.join(fname, 'jac_mocolor_vent.npy'), jacs)
         np.save(os.path.join(fname, 'sv_mocolor_vent.npy'), svs)
+    
+    # Check whether a specified save data path exists
+    results_exist = os.path.exists(fname + "/results")
+
+    # Create a new directory because the results path does not exist
+    if not results_exist:
+        os.makedirs(fname + "/results")
+        print("A new directory inside: " + fname + 
+              " called 'results' has been created.")
+
+    # Save images as Nifti files
+    # Build an array using matrix multiplication
+    scaling_affine = np.array([[1, 0, 0, 0],
+                               [0, 1, 0, 0],
+                               [0, 0, 1, 0],
+                               [0, 0, 0, 1]])
+
+    # Rotate gamma radians about axis i
+    cos_gamma = np.cos(0)
+    sin_gamma = np.sin(0)
+    rotation_affine_1 = np.array([[1, 0, 0, 0],
+                                  [0, cos_gamma, -sin_gamma,  0],
+                                  [0, sin_gamma, cos_gamma, 0],
+                                  [0, 0, 0, 1]])
+    cos_gamma = np.cos(np.pi)
+    sin_gamma = np.sin(np.pi)
+    rotation_affine_2 = np.array([[cos_gamma, 0, sin_gamma, 0],
+                                  [0, 1, 0, 0],
+                                  [-sin_gamma, 0, cos_gamma, 0],
+                                  [0, 0, 0, 1]])
+    cos_gamma = np.cos(0)
+    sin_gamma = np.sin(0)
+    rotation_affine_3 = np.array([[cos_gamma, -sin_gamma, 0, 0],
+                                  [sin_gamma, cos_gamma, 0, 0],
+                                  [0, 0, 1, 0],
+                                  [0, 0, 0, 1]])
+    rotation_affine = rotation_affine_1.dot(
+        rotation_affine_2.dot(rotation_affine_3))
+
+    # Apply translation
+    translation_affine = np.array([[1, 0, 0, 0],
+                                   [0, 1, 0, 0],
+                                   [0, 0, 1, 0],
+                                   [0, 0, 0, 1]])
+
+    # Multiply matrices together
+    aff = translation_affine.dot(rotation_affine.dot(scaling_affine))
+
+    ni_img = nib.Nifti1Image(abs(np.moveaxis(qt, 0, -1).shape), affine=aff)
+    nib.save(ni_img, fname + '/results/img_mocolor')
