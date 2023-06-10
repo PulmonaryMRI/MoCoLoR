@@ -100,6 +100,8 @@ if __name__ == '__main__':
     tshape = (np.int(np.max(traj[...,0])-np.min(traj[...,0]))
               ,np.int(np.max(traj[...,1])-np.min(traj[...,1]))
               ,np.int(np.max(traj[...,2])-np.min(traj[...,2])))
+    # Or use input settings
+    tshape = (int(args.fov_x), int(args.fov_y), int(args.fov_z))
 
     ## calibration
     print('Calibration...')
@@ -107,7 +109,7 @@ if __name__ == '__main__':
     dcf2 = np.reshape(dcf**2,(nphase*npe,nfe))
     coord = np.reshape(traj,(nphase*npe,nfe,3))
 
-    mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(device),ishape = tshape)
+    mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(device),ishape = tshape, mps_ker_width=12, ksp_calib_width=24)
     S = sp.linop.Multiply(tshape, mps)
 
     ## registration
@@ -328,5 +330,5 @@ if __name__ == '__main__':
     # Multiply matrices together
     aff = translation_affine.dot(rotation_affine.dot(scaling_affine))
 
-    ni_img = nib.Nifti1Image(abs(np.moveaxis(qt, 0, -1).shape), affine=aff)
+    ni_img = nib.Nifti1Image(abs(np.moveaxis(qt, 0, -1)), affine=aff)
     nib.save(ni_img, fname + '/results/img_mocolor')

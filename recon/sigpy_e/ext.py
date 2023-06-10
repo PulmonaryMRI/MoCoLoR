@@ -3,13 +3,16 @@ import numpy as np
 import sigpy.mri as mr
 import sigpy_e.nft as nft
 
-def jsens_calib(ksp, coord, dcf, ishape, device = sp.Device(-1)):
+def jsens_calib(ksp, coord, dcf, ishape, device = sp.Device(-1),
+                             mps_ker_width=12,
+                             ksp_calib_width=32,
+                             lamda=0,):
     img_s = nft.nufft_adj([ksp],[coord],[dcf],device = device,ishape = ishape,id_channel =True)
     ksp = sp.fft(input=np.asarray(img_s[0]),axes=(1,2,3))
     mps = mr.app.JsenseRecon(ksp,
-                             mps_ker_width=12,
-                             ksp_calib_width=32,
-                             lamda=0,
+                             mps_ker_width=mps_ker_width,
+                             ksp_calib_width=ksp_calib_width,
+                             lamda=lamda,
                              device=device,
                              comm=sp.Communicator(),
                              max_iter=10,
