@@ -331,4 +331,4 @@ if __name__ == '__main__':
     aff = translation_affine.dot(rotation_affine.dot(scaling_affine))
 
     ni_img = nib.Nifti1Image(abs(np.moveaxis(qt, 0, -1)), affine=aff)
-    nib.save(ni_img, fname + '/results/img_mocolor')
+    nib.save(ni_img, fname + '/results/img_mocolor' + str(nphase))

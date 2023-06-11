@@ -5,6 +5,7 @@ from scipy.signal import find_peaks
 import scipy
 import sigpy as sp
 
+
 def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
     """bin_waveform
 
@@ -88,7 +89,8 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
 
             # Select the area of interest to find the intersection point
             resp_left = resp[peak_idx[k]: peak_idx[k] + n_left]
-            resp_right = resp[valley_idx[k + s_idx]: valley_idx[k + s_idx] + n_right]
+            resp_right = resp[valley_idx[k + s_idx]
+                : valley_idx[k + s_idx] + n_right]
 
             # Intersection points
             bin_amp = amp_left / (n_bins // 2)  # Bin size for each compartment
@@ -156,15 +158,13 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
     return resp_gated
 
 
-
 # %% Generate binned data
-
-N_bins = 10
+N_bins = 30
 
 folder = "data/floret-neonatal/"
-folder = "data/floret-walkup/"
-# folder = "data/floret-plummer/"
-folder = "data/floret-740H-034/"
+# folder = "data/floret-walkup/"
+folder = "data/floret-plummer/"
+# folder = "data/floret-740H-034/"
 
 # Load motion
 motion_load = np.array(np.load(folder + "motion.npy"))
@@ -172,16 +172,20 @@ motion_load = np.squeeze(motion_load)
 if np.size(np.shape(motion_load)) != 2:
     print('Unexpected motion data dimensions.')
 waveform = np.reshape(motion_load, (np.shape(motion_load)[
-                        0]*np.shape(motion_load)[1]))
+    0]*np.shape(motion_load)[1]))
 
 # Optional, normalize waveform
+
+
 def normalize_data(x):
     return (x - np.min(x)) / (np.max(x) - np.min(x))
+
+
 waveform_normalized = normalize_data(waveform)
 
 # Smooth motion waveform
 sos = scipy.signal.iirfilter(4, Wn=[0.1, 2.5], fs=200, btype="bandpass",
-                                ftype="butter", output="sos")
+                             ftype="butter", output="sos")
 waveform_filt = scipy.signal.sosfilt(sos, waveform)
 # waveform_filt = scipy.signal.medfilt(waveform,15) # median filter
 
@@ -197,6 +201,8 @@ plt.show()
 waveform_filt_diff = np.diff(waveform_filt)
 
 # Make binning function
+
+
 def quantile_bins(array, num_bins=10):
     """quantile_bins
 
@@ -206,15 +212,15 @@ def quantile_bins(array, num_bins=10):
 
     Returns:
         out: (Array) (N_bins x N) Indices of output array
-    """    
+    """
     if num_bins % 2:
         raise ValueError(
             f"Number of bins should be even: Current value: {num_bins}!")
-    
+
     # Find the difference vector to see if increasing/decreasing
     array_diff = np.diff(array)
     array_diff = np.append(array_diff, 0)
-    
+
     # Calculate the quantile values
     num_bins_halved = num_bins//2
     quantiles = np.linspace(0, 1, num_bins_halved + 1)
@@ -229,8 +235,8 @@ def quantile_bins(array, num_bins=10):
         mask_increasing = np.array(mask)
         mask_increasing[array_diff >= 0] = 0
         bins[mask_decreasing] = i
-        bins[mask_increasing] = i + num_bins_halved
-        
+        bins[mask_increasing] = num_bins - i - 1
+
     plt.rcParams["figure.figsize"] = (9, 5)
     # plt.rcParams["figure.facecolor"] = "black"
     # plt.rcParams["axes.facecolor"] = "black"
@@ -251,7 +257,7 @@ def quantile_bins(array, num_bins=10):
     plt.title("Respiratory Binning")
     plt.xlabel("RF Excitation")
     plt.ylabel("Amplitude")
-    plt.show()    
+    plt.show()
 
     # Assign output data
     out = []
@@ -260,28 +266,32 @@ def quantile_bins(array, num_bins=10):
         idx = bins == b
         # resp_gated.append(resp_in[idx])
         out.append(idx)
-    
+
     return out
+
 
 # Bin data
 resp_gated = quantile_bins(waveform_filt, num_bins=N_bins)
 print(np.sum(resp_gated, axis=1))
 
 # Subset value to have same number proj in each insp exp
-k=np.min(np.sum(resp_gated, axis=1))
+k = np.min(np.sum(resp_gated, axis=1))
 print("Number of points per bin selected: " + str(k))
 
 # Load data
 ksp = np.load(folder + "ksp.npy")
-ksp = np.reshape(ksp, (np.shape(ksp)[0], np.shape(ksp)[1]*np.shape(ksp)[2], np.shape(ksp)[3]))
+ksp = np.reshape(ksp, (np.shape(ksp)[0], np.shape(ksp)[
+                 1]*np.shape(ksp)[2], np.shape(ksp)[3]))
 print(np.shape(ksp))
 coord = np.load(folder + "coord.npy")
-coord = coord.reshape((np.shape(coord)[0]*np.shape(coord)[1],np.shape(coord)[2], np.shape(coord)[3]))
+coord = coord.reshape(
+    (np.shape(coord)[0]*np.shape(coord)[1], np.shape(coord)[2], np.shape(coord)[3]))
 dcf = np.load(folder + "dcf.npy")
-dcf = dcf.reshape((np.shape(dcf)[0]* np.shape(dcf)[1],np.shape(dcf)[2]))
+dcf = dcf.reshape((np.shape(dcf)[0] * np.shape(dcf)[1], np.shape(dcf)[2]))
 
 # Subset
-ksp_save = np.zeros((N_bins, np.shape(ksp)[0], k, np.shape(ksp)[2]), dtype="complex")
+ksp_save = np.zeros(
+    (N_bins, np.shape(ksp)[0], k, np.shape(ksp)[2]), dtype="complex")
 coord_save = np.zeros((N_bins, k, np.shape(coord)[1], np.shape(coord)[2]))
 dcf_save = np.zeros((N_bins, k,  np.shape(dcf)[1]), dtype="complex")
 
@@ -294,7 +304,7 @@ for gate_number in range(N_bins):
     ksp_subset = ksp_subset[:, :k, :]
     ksp_save[gate_number, :, :, :] = ksp_subset
     coord_subset = coord[subset, ...]
-    coord_subset = coord_subset[:k,...]
+    coord_subset = coord_subset[:k, ...]
     coord_save[gate_number, ...] = coord_subset
     dcf_subset = dcf[subset, ...]
     dcf_subset = dcf_subset[:k, ...]
@@ -306,4 +316,3 @@ print(np.shape(dcf_save))
 np.save(folder + "bksp.npy", ksp_save)
 np.save(folder + "bcoord.npy", coord_save)
 np.save(folder + "bdcf.npy", dcf_save)
-
