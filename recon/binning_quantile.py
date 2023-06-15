@@ -159,12 +159,11 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
 
 
 # %% Generate binned data
-N_bins = 30
+N_bins = 10
 
 folder = "data/floret-neonatal/"
-# folder = "data/floret-walkup/"
 folder = "data/floret-plummer/"
-# folder = "data/floret-740H-034/"
+folder = "data/floret-740H-034/"
 
 # Load motion
 motion_load = np.array(np.load(folder + "motion.npy"))
@@ -272,11 +271,21 @@ def quantile_bins(array, num_bins=10):
 
 # Bin data
 resp_gated = quantile_bins(waveform_filt, num_bins=N_bins)
+print("Number of projections per respiratory bin:")
 print(np.sum(resp_gated, axis=1))
+
+# Estimate "goodness of breathing"
+range_bins = np.ptp(np.sum(resp_gated, axis=1))
+range_norm = range_bins/np.max(np.sum(resp_gated, axis=1))
+print("Normalized variability of projections in each bin: " +
+      str(np.round(range_norm, 3)))
+print("(normalized to max number of projections per bin)")
+print("(0 = incredible)")
+print("(1 = awful)")
 
 # Subset value to have same number proj in each insp exp
 k = np.min(np.sum(resp_gated, axis=1))
-print("Number of points per bin selected: " + str(k))
+print("Number of points per bin selected for use: " + str(k))
 
 # Load data
 ksp = np.load(folder + "ksp.npy")
