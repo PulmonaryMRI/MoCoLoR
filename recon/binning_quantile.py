@@ -160,10 +160,10 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
 # %% Generate binned data
 N_bins = 10
 
-folder = "data/floret-neonatal/"
-# folder = "data/floret-186H-023/"
+# folder = "data/floret-neonatal/"
+# folder = "data/floret-803H-023/"
 # folder = "data/floret-740H-034/"
-# folder = "data/floret-740H-048c/"
+folder = "data/floret-186H-479/"
 
 # Load motion
 motion_load = np.array(np.load(folder + "motion.npy"))
