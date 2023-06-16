@@ -101,6 +101,11 @@ if __name__ == '__main__':
     # Or use input settings
     tshape = (int(args.fov_x), int(args.fov_y), int(args.fov_z))
 
+    print('Number of phases used in this reconstruction: ' + str(nphase))
+    print('Number of coils: ' + str(nCoil))
+    print('Number of phase encodes: ' + str(npe))
+    print('Number of frequency encodes: ' + str(nfe))
+
     # calibration
     print('Calibration...')
     ksp = np.reshape(np.transpose(data, (1, 0, 2, 3)),
