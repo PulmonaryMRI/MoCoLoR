@@ -89,8 +89,7 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
 
             # Select the area of interest to find the intersection point
             resp_left = resp[peak_idx[k]: peak_idx[k] + n_left]
-            resp_right = resp[valley_idx[k + s_idx]
-                : valley_idx[k + s_idx] + n_right]
+            resp_right = resp[valley_idx[k + s_idx]                              : valley_idx[k + s_idx] + n_right]
 
             # Intersection points
             bin_amp = amp_left / (n_bins // 2)  # Bin size for each compartment
@@ -162,8 +161,9 @@ def bin_waveform(resp_in, n_bins, resp_min, resp_max, prominence):
 N_bins = 10
 
 folder = "data/floret-neonatal/"
-folder = "data/floret-plummer/"
-folder = "data/floret-740H-034/"
+# folder = "data/floret-186H-023/"
+# folder = "data/floret-740H-034/"
+# folder = "data/floret-740H-048c/"
 
 # Load motion
 motion_load = np.array(np.load(folder + "motion.npy"))
@@ -319,9 +319,11 @@ for gate_number in range(N_bins):
     dcf_subset = dcf_subset[:k, ...]
     dcf_save[gate_number, ...] = dcf_subset
 
-print(np.shape(ksp_save))
-print(np.shape(coord_save))
-print(np.shape(dcf_save))
+print("Saving data using with the following dimensions...")
 np.save(folder + "bksp.npy", ksp_save)
+print('bksp: ' + str(np.shape(ksp_save)))
 np.save(folder + "bcoord.npy", coord_save)
+print('bcoord: ' + str(np.shape(coord_save)))
 np.save(folder + "bdcf.npy", dcf_save)
+print('bdcf: ' + str(np.shape(dcf_save)))
+print("...completed.")

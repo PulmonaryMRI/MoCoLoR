@@ -153,7 +153,7 @@ if __name__ == '__main__':
     PFTSs = Diags(PFTSs, oshape=(nphase, nCoil, npe, nfe,),
                   ishape=(nphase,)+tshape)
 
-    if mr_cflag is 1:
+    if mr_cflag == 1:
         print('With moco...')
         sp.linop.Identity((nphase,)+tshape)
         Ms = []
@@ -336,8 +336,8 @@ if __name__ == '__main__':
     ni_img = nib.Nifti1Image(abs(np.moveaxis(qt, 0, -1)), affine=aff)
     nib.save(ni_img, fname + '/results/img_mocolor_' + str(nphase) + '_bin')
 
-    ni_img = nib.Nifti1Image(abs(np.moveaxis(svs, 0, -1)), affine=aff)
+    ni_img = nib.Nifti1Image(np.moveaxis(svs, 0, -1), affine=aff)
     nib.save(ni_img, fname + '/results/sv_mocolor_' + str(nphase) + '_bin')
 
-    ni_img = nib.Nifti1Image(abs(np.moveaxis(jacs, 0, -1)), affine=aff)
+    ni_img = nib.Nifti1Image(np.moveaxis(jacs, 0, -1), affine=aff)
     nib.save(ni_img, fname + '/results/jacs_mocolor_' + str(nphase) + '_bin')
