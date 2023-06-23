@@ -32,6 +32,11 @@ if __name__ == '__main__':
 
     parser.add_argument('--res_scale', type=float, default=1,
                         help='scale of resolution, full res == 1')
+    parser.add_argument('--scan_res', type=float, default=200,
+                        help='scan matrix size')
+    parser.add_argument('--recon_res', type=float, default=200,
+                        help='econ matrix size')
+    
     parser.add_argument('--fov_x', type=float, default=1,
                         help='scale of FOV x, full res == 1')
     parser.add_argument('--fov_y', type=float, default=1,
@@ -66,6 +71,8 @@ if __name__ == '__main__':
 
     #
     res_scale = args.res_scale
+    scan_resolution = args.scan_res
+    recon_resolution = args.recon_res
     fname = args.fname
     lambda_lr = args.lambda_lr
     device = args.device
@@ -77,6 +84,8 @@ if __name__ == '__main__':
     reg_flag = args.reg_flag
     mr_cflag = args.mr_cflag
     vent_flag = args.vent_flag
+    
+    print('Reconstruction started...')
 
     # data loading
     data = np.load(os.path.join(fname, 'bksp.npy'))
@@ -86,7 +95,8 @@ if __name__ == '__main__':
     nf_scale = res_scale
     nf_arr = np.sqrt(np.sum(traj[0, 0, :, :]**2, axis=1))
     nf_e = np.sum(nf_arr < np.max(nf_arr)*nf_scale)
-    scale = fov_scale
+    scale = (scan_resolution, scan_resolution, scan_resolution) # Added JWP
+    # scale = fov_scale
     traj[..., 0] = traj[..., 0]*scale[0]
     traj[..., 1] = traj[..., 1]*scale[1]
     traj[..., 2] = traj[..., 2]*scale[2]
@@ -98,8 +108,8 @@ if __name__ == '__main__':
     nphase, nCoil, npe, nfe = data.shape
     tshape = (np.int(np.max(traj[..., 0])-np.min(traj[..., 0])), np.int(np.max(
         traj[..., 1])-np.min(traj[..., 1])), np.int(np.max(traj[..., 2])-np.min(traj[..., 2])))
-    # Or use input settings
-    tshape = (int(args.fov_x), int(args.fov_y), int(args.fov_z))
+    # Or use manual input settings
+    tshape = (int(recon_resolution), int(recon_resolution), int(recon_resolution))
 
     print('Number of phases used in this reconstruction: ' + str(nphase))
     print('Number of coils: ' + str(nCoil))
