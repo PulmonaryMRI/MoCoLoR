@@ -80,7 +80,7 @@ ksp = np.reshape(np.transpose(data,(1,0,2,3)),(nCoil,nphase*npe,nfe))
 dcf2 = np.reshape(dcf**2,(nphase*npe,nfe))
 coord = np.reshape(traj,(nphase*npe,nfe,3))
 
-mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(0),ishape = tshape)
+mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(device),ishape = tshape)
 S = sp.linop.Multiply(tshape, mps)
 
 ### recon
