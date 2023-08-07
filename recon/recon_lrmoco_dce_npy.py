@@ -101,9 +101,9 @@ if __name__ == '__main__':
     dcf = dcf[...,:nf_e]
     
     nCoil,npe,nfe = data.shape
-    tshape = (np.int(np.max(traj[...,0])-np.min(traj[...,0]))
-              ,np.int(np.max(traj[...,1])-np.min(traj[...,1]))
-              ,np.int(np.max(traj[...,2])-np.min(traj[...,2])))
+    tshape = (int(np.max(traj[...,0])-np.min(traj[...,0]))
+              ,int(np.max(traj[...,1])-np.min(traj[...,1]))
+              ,int(np.max(traj[...,2])-np.min(traj[...,2])))
     
     #nphase = 5 # motion resolved
     
@@ -122,9 +122,9 @@ if __name__ == '__main__':
         dcf_c = dcf[...,:nf_e]
 
         nCoil,npe,nfe = data_c.shape
-        tshape1 = (np.int(np.max(traj_c[...,0])-np.min(traj_c[...,0]))
-                  ,np.int(np.max(traj_c[...,1])-np.min(traj_c[...,1]))
-                  ,np.int(np.max(traj_c[...,2])-np.min(traj_c[...,2])))
+        tshape1 = (int(np.max(traj_c[...,0])-np.min(traj_c[...,0]))
+                  ,int(np.max(traj_c[...,1])-np.min(traj_c[...,1]))
+                  ,int(np.max(traj_c[...,2])-np.min(traj_c[...,2])))
         print('Affine transform estimation:{}'.format(tshape1))
 
         # smap calibration
