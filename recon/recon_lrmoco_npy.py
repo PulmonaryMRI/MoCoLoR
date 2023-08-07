@@ -108,7 +108,7 @@ if __name__ == '__main__':
         print('Registration...')
         M_fields = []
         iM_fields = []
-        if reg_flag is 1:
+        if reg_flag == 1:
             imgL = np.load(os.path.join(fname, 'prL.npy'))
             imgL = np.abs(np.squeeze(imgL))
             imgL = imgL/np.max(imgL)
@@ -142,7 +142,7 @@ if __name__ == '__main__':
         PFTSs.append(FTSs)
     PFTSs = Diags(PFTSs,oshape=(nphase,nCoil,npe,nfe,),ishape=(nphase,)+tshape)
 
-    if mr_cflag is 1:
+    if mr_cflag == 1:
         print('With moco...')
         sp.linop.Identity((nphase,)+tshape)
         Ms = []

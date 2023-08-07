@@ -149,7 +149,7 @@ if __name__ == '__main__':
         PFTSs.append(FTSs)
     PFTSs = Diags(PFTSs,oshape=(nphase,nCoil,npe,nfe,),ishape=(nphase,)+tshape)
 
-    if mr_cflag is 1:
+    if mr_cflag == 1:
         print('With moco...')
         sp.linop.Identity((nphase,)+tshape)
         Ms = []
