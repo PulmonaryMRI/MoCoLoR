@@ -9,8 +9,17 @@ Motion-compensated low-rank reconstruction for simultaneous structural and funct
 Tan F, Zhu X, Chan M, Zapala MA, Vasanawala SS, Ong F, Lustig M, Larson PEZ. Motion-compensated low-rank reconstruction for simultaneous structural and functional UTE lung MRI. Magn Reson Med. 2023. doi: [10.1002/mrm.29703](https://dx.doi.org/10.1002/mrm.29703)
 
 ## Dependency
+Tested with Python 3.10.6:
+* numpy
+* sigpy
+* antspyx
+* h5py
+* pydicom
+* cupy
+* numba
+* tqdm
+* scipy
 
-numpy, matplotlib, sigpy==0.1.16, antspyx, h5py, pydicom
 
 ## Example Usage
 

@@ -109,6 +109,11 @@ if __name__ == '__main__':
     mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(device),ishape = tshape)
     S = sp.linop.Multiply(tshape, mps)
 
+    # Delete some unused arrays to save memory
+    dcf2 = None
+    ksp = None
+    coord = None
+
     ## registration
     print('Motion Field Initialization...')
     # M_fields = []
@@ -183,6 +188,11 @@ if __name__ == '__main__':
     tmp = np.fft.ifftshift(tmp)
     # TODO condition number calc
     wdata = data*dcf[:,np.newaxis,:,:]
+
+# Delete some unused arrays to save memory
+    dcf = None
+    traj = None
+    data = None
 
     # ADMM
     print('Recon...')

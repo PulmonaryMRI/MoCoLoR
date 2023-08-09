@@ -131,6 +131,11 @@ if __name__ == '__main__':
         mps = ext.jsens_calib(data_c,traj_c,dcf_c,device = sp.Device(device),ishape = tshape1)
         S = sp.linop.Multiply(tshape1, mps)
 
+        # Delete some unused arrays to save memory
+        dcf = None
+        ksp = None
+        coord = None
+
         # dynamic segmentation
         data_dyn = []
         traj_dyn = []
@@ -160,6 +165,12 @@ if __name__ == '__main__':
         tmp = FTSs.H*FTSs*np.complex64(np.ones(tshape1))
         L=np.mean(np.abs(tmp))
         print('precondition:{}'.format(L))
+
+        # Delete some unused arrays to save memory
+        dcf_c = None
+        dcf_t = None
+        traj = None
+        data = None
 
         # recon
         wdata = data_dyn*dcf_dyn[:,None,...]
