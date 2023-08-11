@@ -356,7 +356,12 @@ def interp(I, M_field, device = sp.Device(-1), k_id = 1, deblur = True):
     
     g_device = device
     I = sp.to_device(input=I,device=g_device)
-    I = sp.interp.interpolate(I,k_wid,kernel,M_field.astype(np.float64))
+    from importlib_metadata import version
+    if version('sigpy') <= '0.1.16':
+        I = sp.interp.interpolate(I,k_wid,kernel,M_field.astype(np.float64))
+    else:
+        M_field_device = sp.to_device(input=M_field.astype(np.float64), device=g_device) # v0.1.17
+        I = sp.interp.interpolate(input=I,coord=M_field_device) # v0.1.17 (input, coord, kernel='spline', width=2, param=1)
     # deconv
     if deblur is True:
         sp.conv.convolve(I,dkernel)
