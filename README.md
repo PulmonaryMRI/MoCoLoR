@@ -36,6 +36,9 @@ python recon_lrmoco_npy.py ${file_dir} --lambda_lr 0.05 --vent_flag 1 --mr_cflag
 # run mocolor reconstruction
 python recon_lrmoco_vent_npy.py ${file_dir} --lambda_lr 0.05 --vent_flag 1 --reg_flag 1
 
+# export DICOMs
+python dicom_from_npy.py ${file_dir} ${orig_dicom_dir}
+
 # rm temp files
 rm bcoord.npy bdcf.npy bksp.npy _M_mr.npy
 
