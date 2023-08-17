@@ -53,6 +53,9 @@ if __name__ == '__main__':
     SliceLocation_original = ds.SliceLocation
     ImagePositionPatient_original = ds.ImagePositionPatient
 
+    # Uncomment this line to flip images up-down
+    # ims = np.flip(ims,1)
+
     try:
         os.mkdir(new_dicom_dir)
     except OSError as error:
