@@ -10,12 +10,12 @@ Tan F, Zhu X, Chan M, Zapala MA, Vasanawala SS, Ong F, Lustig M, Larson PEZ. Mot
 
 ## Dependency
 
-numpy, matplotlib, sigpy==0.1.16, antspyx, h5py, pydicom
+numpy>=1.21, matplotlib, sigpy==0.1.16, antspyx, h5py, pydicom
 
 ## Example Usage
 
 ```
-# convert ute
+# convert ute, uses the output 'MRI_Raw.h5' of pcvipr_recon_binary
 python convert_uwute_npy.py ${file_dir} ${file_dir}
 
 # run xd reconstruction
