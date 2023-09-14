@@ -15,7 +15,8 @@ numpy>=1.21, matplotlib, sigpy==0.1.16, antspyx, h5py, pydicom
 ## Example Usage
 
 ```
-# convert ute, uses the output 'MRI_Raw.h5' of pcvipr_recon_binary
+# convert ute data when using the uwute sequence
+# uses the output 'MRI_Raw.h5' of pcvipr_recon_binary created using -export_kdata flag
 python convert_uwute_npy.py ${file_dir} ${file_dir}
 
 # run xd reconstruction
