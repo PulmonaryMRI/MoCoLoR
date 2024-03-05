@@ -10,8 +10,8 @@ Tan F, Zhu X, Chan M, Zapala MA, Vasanawala SS, Ong F, Lustig M, Larson PEZ. Mot
 
 ## Dependency
 Tested with Python 3.10.6:
-* numpy
-* sigpy
+* numpy (>=1.21)
+* sigpy (tested ==0.1.16)
 * antspyx
 * h5py
 * pydicom
@@ -20,11 +20,11 @@ Tested with Python 3.10.6:
 * tqdm
 * scipy
 
-
 ## Example Usage
 
 ```
-# convert ute
+# convert ute data when using the uwute sequence
+# uses the output 'MRI_Raw.h5' of pcvipr_recon_binary created using -export_kdata flag
 python convert_uwute_npy.py ${file_dir} ${file_dir}
 
 # run xd reconstruction
