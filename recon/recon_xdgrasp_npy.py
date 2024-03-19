@@ -71,17 +71,22 @@ data = data[...,:nf_e]
 dcf = dcf[...,:nf_e]
 
 nphase,nCoil,npe,nfe = data.shape
-tshape = (np.int(np.max(traj[...,0])-np.min(traj[...,0]))
-          ,np.int(np.max(traj[...,1])-np.min(traj[...,1]))
-          ,np.int(np.max(traj[...,2])-np.min(traj[...,2])))
+tshape = (int(np.max(traj[...,0])-np.min(traj[...,0]))
+          ,int(np.max(traj[...,1])-np.min(traj[...,1]))
+          ,int(np.max(traj[...,2])-np.min(traj[...,2])))
 
 ### calibration
 ksp = np.reshape(np.transpose(data,(1,0,2,3)),(nCoil,nphase*npe,nfe))
 dcf2 = np.reshape(dcf**2,(nphase*npe,nfe))
 coord = np.reshape(traj,(nphase*npe,nfe,3))
 
-mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(0),ishape = tshape)
+mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(device),ishape = tshape)
 S = sp.linop.Multiply(tshape, mps)
+
+# Delete some unused arrays to save memory
+dcf2 = None
+ksp = None
+coord = None
 
 ### recon
 PFTSs = []
@@ -106,11 +111,15 @@ res_norm = np.zeros((outer_iter,1))
 
 logging.basicConfig(level=logging.INFO)
 
+# Delete some unused arrays to save memory
+dcf = None
+traj = None
+data = None
+
 sigma = 0.4
 tau = 0.4
 for i in range(outer_iter):
     Y = (Y + sigma*(1/L*PFTSs*q2-wdata))/(1+sigma)
-    
     q20 = q2
     q2 = np.complex64(ext.TVt_prox(q2-tau*PFTSs.H*Y,lambda_TV))
     res_norm[i] = np.linalg.norm(q2-q20)/np.linalg.norm(q2)

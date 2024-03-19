@@ -9,8 +9,16 @@ Motion-compensated low-rank reconstruction for simultaneous structural and funct
 Tan F, Zhu X, Chan M, Zapala MA, Vasanawala SS, Ong F, Lustig M, Larson PEZ. Motion-compensated low-rank reconstruction for simultaneous structural and functional UTE lung MRI. Magn Reson Med. 2023. doi: [10.1002/mrm.29703](https://dx.doi.org/10.1002/mrm.29703)
 
 ## Dependency
-
-numpy>=1.21, matplotlib, sigpy==0.1.16, antspyx, h5py, pydicom
+Tested with Python 3.10.6:
+* numpy (>=1.21)
+* sigpy (tested ==0.1.16)
+* antspyx
+* h5py
+* pydicom
+* cupy
+* numba
+* tqdm
+* scipy
 
 ## Example Usage
 
@@ -27,6 +35,9 @@ python recon_lrmoco_npy.py ${file_dir} --lambda_lr 0.05 --vent_flag 1 --mr_cflag
 
 # run mocolor reconstruction
 python recon_lrmoco_vent_npy.py ${file_dir} --lambda_lr 0.05 --vent_flag 1 --reg_flag 1
+
+# export DICOMs
+python dicom_from_npy.py ${file_dir} ${orig_dicom_dir}
 
 # rm temp files
 rm bcoord.npy bdcf.npy bksp.npy _M_mr.npy

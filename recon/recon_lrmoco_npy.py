@@ -90,9 +90,9 @@ if __name__ == '__main__':
     dcf = dcf[...,:nf_e]
 
     nphase,nCoil,npe,nfe = data.shape
-    tshape = (np.int(np.max(traj[...,0])-np.min(traj[...,0]))
-              ,np.int(np.max(traj[...,1])-np.min(traj[...,1]))
-              ,np.int(np.max(traj[...,2])-np.min(traj[...,2])))
+    tshape = (int(np.max(traj[...,0])-np.min(traj[...,0]))
+              ,int(np.max(traj[...,1])-np.min(traj[...,1]))
+              ,int(np.max(traj[...,2])-np.min(traj[...,2])))
 
     ## calibration
     print('Calibration...')
@@ -103,12 +103,17 @@ if __name__ == '__main__':
     mps = ext.jsens_calib(ksp,coord,dcf2,device = sp.Device(device),ishape = tshape)
     S = sp.linop.Multiply(tshape, mps)
 
+    # Delete some unused arrays to save memory
+    dcf2 = None
+    ksp = None
+    coord = None
+
     ## registration
     if mr_cflag == 1:
         print('Registration...')
         M_fields = []
         iM_fields = []
-        if reg_flag is 1:
+        if reg_flag == 1:
             imgL = np.load(os.path.join(fname, 'prL.npy'))
             imgL = np.abs(np.squeeze(imgL))
             imgL = imgL/np.max(imgL)
@@ -142,7 +147,7 @@ if __name__ == '__main__':
         PFTSs.append(FTSs)
     PFTSs = Diags(PFTSs,oshape=(nphase,nCoil,npe,nfe,),ishape=(nphase,)+tshape)
 
-    if mr_cflag is 1:
+    if mr_cflag == 1:
         print('With moco...')
         sp.linop.Identity((nphase,)+tshape)
         Ms = []
@@ -176,6 +181,11 @@ if __name__ == '__main__':
     tmp = np.fft.ifftshift(tmp)
     # TODO condition number calc
     wdata = data*dcf[:,np.newaxis,:,:]
+
+# Delete some unused arrays to save memory
+    dcf = None
+    traj = None
+    data = None
 
     # ADMM
     print('Recon...')
